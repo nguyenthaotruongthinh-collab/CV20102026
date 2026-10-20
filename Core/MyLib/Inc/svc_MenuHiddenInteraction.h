@@ -1,0 +1,10 @@
+
+#ifndef APPLICATION_USER_MYLIB_INC_SVC_MENUHIDDENINTERACTION_H_
+#define APPLICATION_USER_MYLIB_INC_SVC_MENUHIDDENINTERACTION_H_
+
+#include "mid_ManagerMenu.h"
+
+void svc_MenuHiddenInteraction(void);
+void svc_MenuHiddenInital (void);
+
+#endif /* APPLICATION_USER_MYLIB_INC_SVC_MENUHIDDENINTERACTION_H_ */

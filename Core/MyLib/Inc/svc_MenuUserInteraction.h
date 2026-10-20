@@ -1,0 +1,8 @@
+#ifndef APPLICATION_USER_MYLIB_INC_SVC_MENUUSERINTERACTION_H_
+#define APPLICATION_USER_MYLIB_INC_SVC_MENUUSERINTERACTION_H_
+
+#include "mid_ManagerMenu.h"
+
+void svc_MenuUserInteraction(void);
+void svc_MenuUserInital (void);
+#endif /* APPLICATION_USER_MYLIB_INC_SVC_MENUUSERINTERACTION_H_ */

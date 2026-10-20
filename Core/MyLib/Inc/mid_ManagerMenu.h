@@ -1,0 +1,469 @@
+#ifndef APPLICATION_USER_MYLIB_INC_MID_MANAGERMENU_H_
+#define APPLICATION_USER_MYLIB_INC_MID_MANAGERMENU_H_
+
+#include <string.h>
+#include <stdio.h>
+#include <stdbool.h>
+
+#include "svc_Timer.h"
+
+#include "svc_LED14Seg.h"
+#include "svc_LEDSingle.h"
+
+#include "svc_Button.h"
+#include "svc_Encoder.h"
+
+typedef enum {
+	MODEL_SUPER800 = 0,
+	MODEL_SUPER500,
+	MODEL_SUPER400,
+	MODEL_SUPER350,
+	MODEL_SUPER315,
+	MODEL_COUNT
+} ModelId_t;
+
+#define MODEL MODEL_SUPER800
+
+#define ID_NULL 0xFFFF
+
+#if (MODEL == MODEL_SUPER800)
+	#define MaxPreset	805
+	#define MaxOutput	880000
+	#define IsOption	0
+#endif
+
+typedef enum {
+	MENULV1_ID_STARTUP = 0,
+	MENULV1_ID_FAULTS,
+	MENULV1_ID_FRONT,
+	MENULV1_ID_USER,
+	MENULV1_ID_TECH,
+	MENULV1_ID_HIDDEN,
+	MENULV1_ID_ARC,
+	MENULV1_ID_COUNT
+} MIDMenuLV1Id_t;
+
+typedef enum {
+	HEADER_ID_AMPER = 0,
+	HEADER_ID_PROCESS,
+	HEADER_ID_POLARITY,
+	HEADER_ID_MODE,
+	HEADER_ID_PULSE,
+	HEADER_ID_SEQUENCE,
+	HEADER_ID_FORCE,
+	HEADER_ID_GAS,
+	HEADER_ID_AC_SHAPE,
+	HEADER_ID_AC_PARAMETER,
+	HEADER_ID_EXTERNAL,
+	HEADER_ID_MEMORY,
+	HEADER_ID_COUNT
+} MIDMenuHeaderId_t;
+
+typedef enum {
+	MENULV2_ID_START_FRONT = 0,
+	MENULV2_ID_AMPER = MENULV2_ID_START_FRONT,
+	MENULV2_ID_PROCESS,
+	MENULV2_ID_POLARITY,
+	MENULV2_ID_MODE,
+
+	MENULV2_ID_START_PULSE,
+	MENULV2_ID_PULSE_ENABLE = MENULV2_ID_START_PULSE,
+	MENULV2_ID_PULSE_FREQUENCY,
+	MENULV2_ID_PULSE_DUTY,
+	MENULV2_ID_PULSE_BKGND,
+	MENULV2_ID_FINAL_PULSE = MENULV2_ID_PULSE_BKGND,
+
+	MENULV2_ID_START_SEQUENCE,
+	MENULV2_ID_SEQUENCE_START = MENULV2_ID_START_SEQUENCE,
+	MENULV2_ID_SEQUENCE_UP,
+	MENULV2_ID_SEQUENCE_DOWN,
+	MENULV2_ID_SEQUENCE_FINAL,
+	MENULV2_ID_FINAL_SEQUENCE = MENULV2_ID_SEQUENCE_FINAL,
+
+	MENULV2_ID_START_FORCE,
+	MENULV2_ID_FORCE_HOTC = MENULV2_ID_START_FORCE,
+	MENULV2_ID_FORCE_HOTT,
+	MENULV2_ID_FORCE_ARCF,
+	MENULV2_ID_FINAL_FORCE = MENULV2_ID_FORCE_ARCF,
+
+	MENULV2_ID_START_GAS,
+	MENULV2_ID_GAS_PRE = MENULV2_ID_START_GAS,
+	MENULV2_ID_GAS_POST,
+	MENULV2_ID_FINAL_GAS = MENULV2_ID_GAS_POST,
+
+	MENULV2_ID_AC_SHAPE,
+
+	MENULV2_ID_START_AC_PARAM,
+	MENULV2_ID_AC_PARAM_EN = MENULV2_ID_START_AC_PARAM,
+	MENULV2_ID_AC_PARAM_EP,
+	MENULV2_ID_AC_PARAM_K_ENEP,
+	MENULV2_ID_AC_PARAM_BALANCE,
+	MENULV2_ID_AC_PARAM_FREQUENCY,
+	MENULV2_ID_FINAL_AC_PARAM = MENULV2_ID_AC_PARAM_FREQUENCY,
+
+	MENULV2_ID_START_EXTERNAL,
+	MENULV2_ID_EXTERNAL_WIFI = MENULV2_ID_START_EXTERNAL,
+	MENULV2_ID_EXTERNAL_DEVICENET,
+	MENULV2_ID_EXTERNAL_RTU,
+	MENULV2_ID_EXTERNAL_ROBOT,
+	MENULV2_ID_FINAL_EXTERNAL = MENULV2_ID_EXTERNAL_ROBOT,
+
+	MENULV2_ID_MEMORY,
+	MENULV2_ID_FINAL_FRONT,
+
+	MENULV2_ID_START_USER = MENULV2_ID_FINAL_FRONT,
+	MENULV2_ID_OPEN_USER = MENULV2_ID_START_USER,
+	MENULV2_ID_ARCSTART_AUTO,
+	MENULV2_ID_STRP_DC,
+	MENULV2_ID_STRP_AC,
+	MENULV2_ID_TUNGSTEN,
+	MENULV2_ID_HOTC,
+	MENULV2_ID_HOTT,
+	MENULV2_ID_STPC,
+	MENULV2_ID_TPLT,
+	MENULV2_ID_SPECIAL_MODE,
+	MENULV2_ID_AUTOSPOT_WELDING,
+	MENULV2_ID_AUTOSPOT_RELASE,
+	MENULV2_ID_MANUALSPOT_TIME,
+	MENULV2_ID_SAME_ENEP,
+	MENULV2_ID_COMA,
+	MENULV2_ID_STIK,
+	MENULV2_ID_LIFT,
+	MENULV2_ID_VRD,
+	MENULV2_ID_STA,
+	MENULV2_ID_HU0,
+	MENULV2_ID_HFC,
+	MENULV2_ID_DEF,
+	MENULV2_ID_FINAL_USER,
+
+	MENULV2_ID_START_TECH = MENULV2_ID_FINAL_USER,
+	MENULV2_ID_OPEN_TECH = MENULV2_ID_START_TECH,
+	MENULV2_ID_TANKPOWER,
+	MENULV2_ID_PULSER_SHAPE,
+	MENULV2_ID_SYNC,
+	MENULV2_ID_GSYC,
+	MENULV2_ID_FINAL_TECH,
+
+	MENULV2_ID_START_HIDDEN = MENULV2_ID_FINAL_TECH,
+	MENULV2_ID_OPEN_HIDDEN = MENULV2_ID_START_HIDDEN,
+	MENULV2_ID_HULT,
+	MENULV2_ID_SIGNAL_HF,
+	MENULV2_ID_FREQUENCE_HF,
+	MENULV2_ID_DUTY_HF,
+	MENULV2_ID_PWM_OFF,
+	MENULV2_ID_AST,
+	MENULV2_ID_ASS_FOR_SINE_TRIANGLE,
+	MENULV2_ID_D_IFB,
+	MENULV2_ID_D_VFB,
+	MENULV2_ID_D_MMADC,
+	MENULV2_ID_D_MMAAC,
+	MENULV2_ID_D_TIGDC,
+	MENULV2_ID_D_TIGAC_SOFT,
+	MENULV2_ID_D_TIGAC_SQUARE,
+	MENULV2_ID_D_TIGAC_TRIANGLE,
+	MENULV2_ID_D_TIGAC_SINE,
+	MENULV2_ID_DEFAULT,
+	MENULV2_ID_FINAL_HIDDEN,
+
+	MENULV2_ID_START_ARC = MENULV2_ID_FINAL_HIDDEN,
+	MENULV2_ID_OPEN_ARC = MENULV2_ID_START_ARC,
+	MENULV2_ID_FINAL_ARC,
+
+	MENULV2_ID_COUNT = MENULV2_ID_FINAL_ARC
+} MIDMenuLV2Id_t;
+
+typedef enum {
+	PROCESS_ID = 0,
+	PROCESS_MMA,
+	PROCESS_TIG,
+	PROCESS_ID_COUNT
+}MIDMenuProcessId_t;
+
+typedef enum {
+	POLARITY_ID = 0,
+	POLARITY_DC,
+	POLARITY_AC,
+	POLARITY_ID_COUNT
+}MIDMenuPolarityId_t;
+
+typedef enum {
+	MODE_ID = 0,
+	MODE_STD,
+	MODE_HOLD,
+	MODE_ID_COUNT
+}MIDMenuModeId_t;
+
+typedef enum {
+	AC_SHAPE_ID = 0,
+	AC_SOFTSQUARE,
+	AC_SQUARE,
+	AC_TRIANGLE,
+	AC_SINE,
+	AC_SHAPE_ID_COUNT
+}MIDMenuACShapeId_t;
+
+typedef enum {
+	ONOFF_ID = 0,
+	ID_OFF,
+	ID_ON,
+	ONOFF_ID_COUNT
+}MIDMenuOffOnId_t;
+
+typedef enum {
+	YESNO_ID = 0,
+	ID_NO,
+	ID_YES,
+	YESNO_ID_COUNT
+}MIDMenuYesNoId_t;
+
+typedef enum {
+	CHANEL_ID = 0,
+	ID_CH1,
+	ID_CH2,
+	ID_CH3,
+	ID_CH4,
+	ID_CH5,
+	ID_CH6,
+	ID_CH7,
+	CHANEL_ID_COUNT
+}MIDMenuMemoryId_t;
+
+typedef enum {
+	AUTO_ID = 0,
+	AUTO,
+	MANUAL,
+	AUTO_ID_COUNT
+}MIDMenuAutoId_t;
+
+typedef enum {
+	STRP_ID = 0,
+	STRP_EN,
+	STRP_EP,
+	STRP_ID_COUNT
+}MIDMenuSTRPId_t;
+
+typedef enum {
+	TUNG_ID = 0,
+	TUNG_OFF,
+	TUNG_05,
+	TUNG_10,
+	TUNG_16,
+	TUNG_24,
+	TUNG_32,
+	TUNG_40,
+	TUNG_48,
+	TUNG_60,
+	TUNG_ALL,
+	TUNG_ID_COUNT
+}MIDMenuTUNGId_t;
+
+typedef enum {
+	SPECIALMODE_ID = 0,
+    SPECIALMODE_OFF,
+	SPECIALMODE_T2,
+	SPECIALMODE_T3,
+	SPECIALMODE_T4,
+	SPECIALMODE_COUNT
+} MIDMenuSpecialMode_t;
+
+typedef enum {
+	RAITO_ENEP_ID = 0,
+	RAITO_ENEP_SAME,
+	RAITO_ENEP_INDEPENDENT,
+	RAITO_ENEP_COUNT
+} MIDMenuRaitoENEP_t;
+
+typedef enum {
+	COMA_ID = 0,
+    COMA_OFF,
+	COMA_1,
+	COMA_2,
+	COMA_ID_COUNT
+} MIDMenuCOMA_t;
+
+typedef enum {
+	TANK_ID = 0,
+	TANK_ID_AUTO,
+	TANK_ID_OFF,
+	TANK_ID_ON,
+	TANK_ID_COUNT
+} MIDMenuTankPower_t;
+
+typedef enum {
+	PSHAPE_ID = 0,
+	PSHAPE_SQUARE,
+	PSHAPE_TRIANGLE,
+	PSHAPE_SINE,
+	PSHAPE_ID_COUNT
+} MIDMenuPulseShape_t;
+
+typedef enum {
+	SYNC_ID = 0,
+	SYNC_OFF,
+	SYNC_TWIN,
+	SYNC_GSYC,
+	SYNC_ID_COUNT
+} MIDMenuSYNC_t;
+
+typedef enum {
+	GSYC_ID = 0,
+	GSYC_MSTR,
+	GSYC_SLAV,
+	GSYC_ID_COUNT
+} MIDMenuGSYC_t;
+
+typedef enum {
+	SIGNAL_HF_ID = 0,
+	SIGNAL_HF_HIGH,
+	SIGNAL_HF_PWM,
+	SIGNAL_HF_LOW,
+	SIGNAL_HF_ID_COUNT
+} MIDMenuSignalHF_t;
+
+typedef struct {
+	uint16_t Min;
+	uint16_t Max;
+	uint16_t Def;
+	uint16_t Step;
+	uint16_t *pValue;
+
+	char Name[8];
+
+	bool IsSpecialLeft;
+	bool IsSpecialRight;
+	bool IsHidden;
+	bool AllowAccel;
+
+	SVC_LEDSingleID_t SLEDId;
+	MIDMenuLV2Id_t ID;
+	SVC_LED14Seg_PointID_t PointID;
+
+	char Unit[1];
+} MIDMenuItem_t;
+
+typedef struct {
+	MIDMenuItem_t data;
+
+	uint16_t IDHome;
+	uint16_t IDNext;
+} ListMenuItem_t;
+
+typedef union {
+	struct {
+		uint16_t AMPER;
+		uint16_t PROCESS;
+		uint16_t POLARITY;
+		uint16_t MODE;
+
+		uint16_t PULSE_ENABLE;
+		uint16_t PULSE_FREQUENCY;
+		uint16_t PULSE_DUTY;
+		uint16_t PULSE_BKGND;
+
+		uint16_t SEQUENCE_START;
+		uint16_t SEQUENCE_UP;
+		uint16_t SEQUENCE_DOWN;
+		uint16_t SEQUENCE_FINAL;
+
+		uint16_t FORCE_HOTC;
+		uint16_t FORCE_HOTT;
+		uint16_t FORCE_ARCF;
+
+		uint16_t GAS_PRE;
+		uint16_t GAS_POST;
+
+		uint16_t AC_SHAPE;
+
+		uint16_t AC_PARAM_EN;
+		uint16_t AC_PARAM_EP;
+		uint16_t AC_PARAM_K_ENEP;
+		uint16_t AC_PARAM_BALANCE;
+		uint16_t AC_PARAM_FREQUENCY;
+
+		uint16_t EXTERNAL_WIFI;
+		uint16_t EXTERNAL_DEVICENET;
+		uint16_t EXTERNAL_RTU;
+		uint16_t EXTERNAL_ROBOT;
+
+		uint16_t MEMORY;
+
+		uint16_t OPEN_USER;
+		uint16_t ARCSTART_AUTO;
+		uint16_t STRP_DC;
+		uint16_t STRP_AC;
+		uint16_t TUNGSTEN;
+		uint16_t HOTC;
+		uint16_t HOTT;
+		uint16_t STPC;
+		uint16_t TPLT;
+		uint16_t SPECIAL_MODE;
+		uint16_t AUTOSPOT_WELDING;
+		uint16_t AUTOSPOT_RELASE;
+		uint16_t MANUALSPOT_TIME;
+		uint16_t SAME_ENEP;
+		uint16_t COMA;
+		uint16_t STIK;
+		uint16_t LIFT;
+		uint16_t VRD;
+		uint16_t STA;
+		uint16_t HU0;
+		uint16_t HFC;
+		uint16_t DEF;
+
+		uint16_t OPEN_TECH;
+		uint16_t TANKPOWER;
+		uint16_t PULSER_SHAPE;
+		uint16_t SYNC;
+		uint16_t GSYC;
+
+		uint16_t OPEN_HIDDEN;
+		uint16_t HULT;
+		uint16_t SIGNAL_HF;
+		uint16_t FREQUENCE_HF;
+		uint16_t DURY_HF;
+		uint16_t PWM_OFF;
+		uint16_t AST;
+		uint16_t ASS_FOR_SINE_TRIANGLE;
+		uint16_t D_IFB;
+		uint16_t D_VFB;
+		uint16_t D_MMADC;
+		uint16_t D_MMAAC;
+		uint16_t D_TIGDC;
+		uint16_t D_TIGAC_SOFT;
+		uint16_t D_TIGAC_SQUARE;
+		uint16_t D_TIGAC_TRIANGLE;
+		uint16_t D_TIGAC_SINE;
+		uint16_t DEFAULT;
+
+		uint16_t OPEN_ARC;
+	};
+
+	uint16_t arr[MENULV2_ID_COUNT];
+}ParamItem_t;
+
+void mid_ManagerMenu_LimitValue(int32_t *Value, uint16_t Min, uint16_t Max);
+void mid_ManagerMenu_RoundRobin(int32_t *Value, uint16_t Min, uint16_t Max);
+void mid_ManagerMenu_AdjustParamterByEncoder (ListMenuItem_t **Itemp);
+void mid_ManagerMenu_NavigationChild (ListMenuItem_t **OutChild);
+void mid_ManagerMenu_DisplayValueSpecial(MIDMenuLV2Id_t PresentID, MIDMenuLV2Id_t ID, const char Mapping[][8]);
+
+void mid_ManagerMenu_setMenuLV1 (MIDMenuLV1Id_t ID);
+MIDMenuLV1Id_t mid_ManagerMenu_getMenuLV1 (void);
+
+void mid_ManagerMenu_setItem (MIDMenuLV2Id_t ID, ListMenuItem_t Input);
+ListMenuItem_t mid_ManagerMenu_getItem (MIDMenuLV2Id_t ID);
+uint16_t mid_ManagerMenu_getParamItem (MIDMenuLV2Id_t ID);
+bool mid_ManagerMenu_getHiddenItem (MIDMenuLV2Id_t ID);
+void mid_ManagerMenu_getAdressItem (MIDMenuLV2Id_t ID, ListMenuItem_t **Output);
+void mid_ManagerMenu_setParamItem (MIDMenuLV2Id_t ID, uint16_t Input);
+
+void mid_ManagerMenu_setHiddenItem (MIDMenuLV2Id_t ID);
+void mid_ManagerMenu_clearHiddenItem (MIDMenuLV2Id_t ID);
+bool mid_ManagerMenu_HiddenHeader(MIDMenuHeaderId_t PresentHeaderID);
+void mid_ManagerMenu_HiddenItem(void);
+
+void mid_ManagerMenu_setMenuLV2 (MIDMenuLV2Id_t ID);
+MIDMenuLV2Id_t mid_ManagerMenu_getMenuLV2 (void);
+uint16_t *mid_ManagerMenu_getAddressParam(MIDMenuLV2Id_t ID);
+
+#endif /* APPLICATION_USER_MYLIB_INC_MID_MANAGERMENU_H_ */
